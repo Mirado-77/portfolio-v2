@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Andriamirado Ravelonahina — Full-Stack Developer</title>
+    <meta name="description" content="Portfolio of Andriamirado Ravelonahina, full-stack developer at Epitech Paris. A HUD demo reel of every project, each runnable in the browser." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23010203'/><path d='M16 3 L28 10 L28 22 L16 29 L4 22 L4 10Z' fill='none' stroke='%232de2ff' stroke-width='2'/><text x='16' y='21' font-family='Arial' font-size='12' font-weight='700' text-anchor='middle' fill='%23ff7a1a'>A</text></svg>" />
+    <meta name="theme-color" content="#010203" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <script>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        var pref = null;
+        try { pref = localStorage.getItem("motion"); } catch (e) {}
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        d.dataset.motion = pref || (reduce ? "off" : "on");
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -248,11 +248,19 @@ export class HoloCore {
     this.renderer.dispose();
   }
 
+  /**
+   * Puts the goal where the anchor (in NDC) meets the z = 0 plane, using the real
+   * camera (it moves with the pointer and looks slightly down), so the form's
+   * centre lands exactly on the anchor — the hero reticle — every frame.
+   */
   private placeGoal() {
     if (!this.target) return;
-    const h = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * this.camera.position.z;
-    const w = h * this.camera.aspect;
-    this.goalPos.set(this.target.anchor[0] * w, this.target.anchor[1] * h + this.camera.position.y, 0);
+    const cam = this.camera;
+    cam.updateMatrixWorld();
+    const p = new THREE.Vector3(this.target.anchor[0], this.target.anchor[1], 0.5).unproject(cam);
+    const dir = p.sub(cam.position).normalize();
+    const t = -cam.position.z / dir.z;
+    this.goalPos.copy(cam.position).addScaledVector(dir, t);
   }
 
   private resize = () => {
@@ -286,6 +294,8 @@ export class HoloCore {
   };
 
   private renderStill() {
+    this.camera.lookAt(0, this.camera.position.y * 0.5, 0);
+    this.placeGoal();
     this.mix = 1;
     this.alpha = this.goalAlpha;
     this.colP.copy(this.goalP);
@@ -320,7 +330,7 @@ export class HoloCore {
     this.alpha += (this.goalAlpha - this.alpha) * k;
     this.colP.lerp(this.goalP, k);
     this.colS.lerp(this.goalS, k);
-    this.group.position.lerp(this.goalPos, 1 - Math.exp(-dt * 2.2));
+    this.group.position.lerp(this.goalPos, 1 - Math.exp(-dt * 5));
     const s = this.group.scale.x + (this.goalScale - this.group.scale.x) * k;
     this.group.scale.setScalar(s);
     this.glitch *= Math.exp(-dt * 5);
@@ -337,6 +347,7 @@ export class HoloCore {
     this.dust.position.y = Math.sin(t * 0.2) * 0.3;
     this.camera.position.x = this.pointerSmooth.x * 0.4;
     this.camera.lookAt(0, this.camera.position.y * 0.5, 0);
+    this.placeGoal();
 
     this.sync(t);
     this.composer.render();
